@@ -1,3 +1,33 @@
+/*
+adwktt
+轉載備註名字
+打开App获取Cookie
+下載地址：http://bububao.yichengw.cn/?id=524855
+
+圈x
+[rewrite_local]
+#步步宝
+https://bububao.duoshoutuan.com/user/profile url script-request-header https://raw.githubusercontent.com/adwktt/adwktt/master/BBB.js
+
+[task_local]
+0 8-23/2 * * * https://raw.githubusercontent.com/adwktt/adwktt/master/BBB.js, tag=步步宝, 
+
+loon
+[Script]
+http-request https://bububao.duoshoutuan.com/user/profile script-path= https://raw.githubusercontent.com/adwktt/adwktt/master/BBB.js, timeout=10, tag= 步步宝
+
+cron "0 8-23/2 * * *" script-path= https://raw.githubusercontent.com/adwktt/adwktt/master/BBB.js, tag= 步步宝
+
+surge
+步步宝 = type=cron,cronexp="0 8-23/2 * * *",wake-system=1,script-path=https://raw.githubusercontent.com/adwktt/adwktt/master/BBB.js,script-update-interval=0
+步步宝 = type=http-request,pattern=https://bububao.duoshoutuan.com/user/profile,requires-body=0,max-size=0,script-path=https://raw.githubusercontent.com/adwktt/adwktt/master/BBB.js,script-update-interval=0
+
+hostname = bububao.duoshoutuan.com,
+
+*/
+
+
+
 const $ = new Env('步步寶')
 let notice = ''
 let bbb_ckArr = [], bbb_ck = "";
@@ -19,11 +49,11 @@ if (process.env.BBB_CK && process.env.BBB_CK.indexOf('\n') > -1) {
         }
   })
 
-
-console.log(`============ 共${bbb_ckArr.length}个账号  =============\n`)
+      console.log(`============ 共${bbb_ckArr.length}个账号  =============\n`)
       console.log(`============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============\n`)
       console.log(`============ 脚本执行-北京时间(UTC+8)：${new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toLocaleString()}  =============\n`)
 }
+
 
 
 now = new Date(new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000);  
@@ -36,37 +66,56 @@ if(CookieVal)$.setdata(CookieVal,'bbb_ck')
      $.msg($.name,"获取Cookie成功")
      $.done()
    }
-} else {
+} 
+
 !(async () => {
 
-$.msg($.name,"開始🎉🎉🎉")
-
-      await cashCheck()
+  if (!bbb_ckArr[0]) {
+    console.log($.name, '【提示】请把CK填入Github 的 Secrets 中，请以回车隔开')
+    return;
+  }
+  
+    for (let i = 0; i < bbb_ckArr.length; i++) {
+    if (bbb_ckArr[i]) {
+      CookieVal = bbb_ckArr[i];
+      $.msg($.name,"開始🎉🎉🎉")
+      await userInfo()
       await signIn()
       await checkWaterNum()
       await zaoWanDkInfo()
       await sleepStatus()
       await clickTaskStatus()
       await watchTaskStatus()
-      //await helpStatus()
+      await helpStatus()
       await getNewsId()
       await checkWaterNum()
       await getQuestionId()
       await guaList()
-      await checkWaterNum()
       await checkHomeJin()
-      await userInfo()
       await showmsg()
+      }  
+            }  
+     console.log(`🏃‍♂️🏃‍♂️🏃‍♂️所有任务已完成🏃‍♂️🏃‍♂️🏃‍♂️`)      
 
 })()
     .catch((e) => $.logErr(e))
     .finally(() => $.done())
-}
+
 
 
 
 function showmsg(){
+  if ($.isNode()){
+     $.log(notice)
+
+       notify.sendNotify($.name,notice)
+
+   }else{
+      $.log(notice)
+
     $.msg($.name, '', notice)
+}
+
      }
 
 var getBoxId = (function () {
@@ -88,7 +137,7 @@ return new Promise((resolve, reject) => {
    $.post(userInfo,async(error, response, data) =>{
      const userinfo = JSON.parse(data)
      if(response.statusCode == 200 && userinfo.code != -1){
-$.log('\n🎉模擬登陸成功\n')
+          $.log('\n🎉模擬登陸成功\n')
      notice += '🎉步步寶帳號: '+userinfo.username+'\n'+'🎉當前金幣: '+userinfo.jinbi+'💰 約'+userinfo.money+'元💸\n'
     }else{
      notice += '⚠️異常原因: '+userinfo.msg+'\n'
@@ -97,6 +146,9 @@ $.log('\n🎉模擬登陸成功\n')
     })
    })
   } 
+
+
+
 
 
 function signIn() {
@@ -219,8 +271,8 @@ return new Promise((resolve, reject) => {
 $.log('\n🔔開始查詢刮刮卡ID\n')
      const guaid = JSON.parse(data)
       if(guaid.ka > 0){
-      for (guaId of guaid.list)
-      if(guaId.is_ad == 0){
+      for (guaId of guaid.list){
+      if(guaId.is_ad == 0)
       GID = guaId.id
 $.log('\n🔔查詢刮刮卡ID成功,5s後開始查询刮卡签名\n')
 $.log('\nGID: '+GID+'\n')
@@ -990,7 +1042,7 @@ return new Promise((resolve, reject) => {
    $.post(getnewsid,async(error, response, data) =>{
      const newsid = JSON.parse(data)
      if(newsid.code == 1){
-       if(newsid.is_max == 0){
+       if(newsid.is_first == 1 && newsid.is_max == 0){
           $.log('\n🔔開始查詢新聞ID\n')
           newsStr = newsid.nonce_str
           $.log('\n🎉新聞ID查詢成功,15s後領取閱讀獎勵\n')
@@ -1076,7 +1128,7 @@ $.log('\n🔔開始抽獎\n')
           await $.wait(5000)
           await luckyCallBack()
          }else{
-          await checkLuckNum()
+          await luckyClick()
          }
        }
           resolve()
@@ -1099,7 +1151,7 @@ $.log('\n🔔開始翻倍抽獎\n')
       if(callback.code == 1) {
           $.log('\n🎉抽獎翻倍成功\n')
           await $.wait(5000)
-          await checkLuckNum()
+          await luckyClick()
            }else{
           $.log('\n⚠️抽獎翻倍失敗:'+callback.msg+'\n')
            }
@@ -1237,6 +1289,7 @@ return new Promise((resolve, reject) => {
     headers: JSON.parse(CookieVal),
     body: `cy_id=${questionId}&site=${questionSite}&`,
 }
+//$.log('\nanswerqueBODY:'+answerque.body+'\n')
    $.post(answerque,async(error, response, data) =>{
      const answer = JSON.parse(data)
 $.log('\n🔔開始答題\n')
@@ -1263,6 +1316,7 @@ return new Promise((resolve, reject) => {
     headers: JSON.parse(CookieVal),
     body: `nonce_str=${answerStr}&tid=18&pos=1&`,
 }
+//$.log('\nanswerQueCallBackBODY:'+answerquecallback.body+'\n')
    $.post(answerquecallback,async(error, response, data) =>{
      const answerback = JSON.parse(data)
 $.log('\n🔔開始翻倍答題金幣\n')
@@ -1277,58 +1331,6 @@ $.log('\n🔔開始翻倍答題金幣\n')
     })
    })
   } 
-
-
-function cashCheck() {
-return new Promise((resolve, reject) => {
-  let timestamp=new Date().getTime();
-  let cashcheck ={
-    url: 'https://bububao.duoshoutuan.com/user/profile',
-    headers: JSON.parse(CookieVal),
-}
-   $.post(cashcheck,async(error, response, data) =>{
-     const cash = JSON.parse(data)
-     if(response.statusCode == 200 && cash.code != -1){
-if(cash.jinbi >= 500000){
-     tip = 50
-      await withDraw()
-     }else if(cash.day_jinbi > 5000){
-     tip = 0.3
-      await withDraw()
-     }
-           }
-          resolve()
-    })
-   })
-  } 
-
-
-
-
-function withDraw() {
-return new Promise((resolve, reject) => {
-  let timestamp=new Date().getTime();
-  let withdraw ={
-    url: `https://bububao.duoshoutuan.com/user/tixian?`,
-    headers: JSON.parse(CookieVal),
-    body: `tx=${tip}&`,
-}
-   $.post(withdraw,async(error, response, data) =>{
-$.log(data)
-     const draw = JSON.parse(data)
-      if(withdraw.code == 1) {
-           $.msg(draw.msg)
-          }else{
-           notice +=draw.tip+'\n'+draw.msg+'\n'
-          }
-          resolve()
-    })
-   })
-  } 
-
-
-
-
 
 
 
