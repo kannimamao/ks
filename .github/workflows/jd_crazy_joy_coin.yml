@@ -6,12 +6,12 @@ name: jd_crazy_joy_coin
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0,8,16 * * *'
+    - cron: '0 16,0,8 * * *'
   #watch:
   #  types: started
   #提交执行
   #push:
-  #  branches: [ main ]
+  #  branches: [ master ]
 
 jobs:
   build:
@@ -30,16 +30,15 @@ jobs:
         cache-name: cache-node-modules
       with:
         path: node_modules
-        key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('package.json') }} # 使用 package-lock.json 的 Hash 作为缓存的 key。也可以使用 package.json 代替
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }} # 使用 package-lock.json 的 Hash 作为缓存的 key。也可以使用 package.json 代替
     - name: npm install
       run: |
         npm install
     - name: '运行 【crazyJoy挂机领金币/宝箱专用】'
       run: |
-        node Scripts/jd_crazy_joy_coin.js
+        node jd_crazy_joy_coin.js
       env:
         JD_COOKIE: ${{ secrets.JD_COOKIE }}
-        JD_USER_AGENT: ${{ secrets.JD_USER_AGENT }}
         JD_DEBUG: ${{ secrets.JD_DEBUG }}
         PUSH_KEY: ${{ secrets.PUSH_KEY }}
         BARK_PUSH: ${{ secrets.BARK_PUSH }}
