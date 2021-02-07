@@ -36,7 +36,7 @@ jobs:
         npm install
     - name: '运行 【crazyJoy挂机领金币/宝箱专用】'
       run: |
-        node jd_crazy_joy_coin.js
+        node Task/jd_crazy_joy_coin.js
       env:
         JD_COOKIE: ${{ secrets.JD_COOKIE }}
         JD_USER_AGENT: ${{ secrets.JD_USER_AGENT }}
