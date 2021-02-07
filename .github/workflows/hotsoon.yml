@@ -45,7 +45,6 @@ jobs:
           HOTSOONADKEY: ${{ secrets. HOTSOONADKEY }}
           HOTSOONREADHEADER: ${{ secrets. HOTSOONREADHEADER }}
           HOTSOONREADKEY: ${{ secrets. HOTSOONREADKEY }}
-          JD_DEBUG: ${{ secrets.JD_DEBUG }}
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
           BARK_PUSH: ${{ secrets.BARK_PUSH }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
