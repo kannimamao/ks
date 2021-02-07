@@ -11,7 +11,7 @@ on:
   #  types: started
   #提交执行
   #push:
-  #  branches: [ master ]
+  #  branches: [ main ]
 
 jobs:
   build:
