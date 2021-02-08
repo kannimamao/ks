@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: 12.x
       - name: npm install
-        if: env.XP_ refreshTOKEN
+        if: env.XP_refreshTOKEN
         run: |
           cd ~/JavaScript
           npm install
