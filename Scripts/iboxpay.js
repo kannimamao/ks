@@ -4,9 +4,11 @@ TG频道地址  https://t.me/ziyescript
 TG交流群   https://t.me/joinchat/AAAAAE7XHm-q1-7Np-tF3g
 boxjs链接  https://raw.githubusercontent.com/ziye12/JavaScript/main/Task/ziye.boxjs.json
 转载请备注个名字，谢谢
+
 ⚠️笑谱
 脚本运行一次   
 则运行6次视频 1次金蛋 1次直播（直播默认关闭，且在8点到23点有效）
+
 1.15 调整金蛋延迟为60秒
 1.17 增加ck失效提醒，以及金币满额停止
 1.27 笑谱恢复，活动id284
@@ -37,37 +39,69 @@ boxjs链接  https://raw.githubusercontent.com/ziye12/JavaScript/main/Task/ziye.
 2.8-4 修复错误
 2.10 修复红包雨问题，LIVE设置3  启动红包雨活动，修复版本问题
 2.10-2 移除红包雨模块
+2.11 移除视频时间限制，LIVE设置666做新人180秒任务
+
 ⚠️一共1个位置 1个ck  👉 5条 Secrets 
 多账号换行
+
+
 ⚠️方法一
+
 第一步 进入笑谱 选择手机号登陆，输入手机号，点击获取验证码
+
 第二步 ⚠️进入boxjs（其他平台则输入对应环境变量）  输入当前账号序号   输入手机号  和  验证码
+
 第三步 运行js  手机则自动获取token（其他平台则复制token，填写环境变量）  然后回到boxjs 修改验证码为0
+
+
 已全部操作完成
+
+
 ⚠️方法二
+
 第一步 添加  hostname=veishop.iboxpay.com,
+
 第二步 ⚠️添加笑谱获取更新TOKEN重写  
+
 登录笑谱(在登录状态就退出，重新登录)  获取更新TOKEN
+
+
+
 refreshtokenVal 👉XP_refreshTOKEN
+
 设置任务 可设置 0 1 2    0开视频关直播 1开视频开直播 2关视频开直播
  LIVE  👉  XP_live
+
 设置提现金额 可设置 0 1 15 30 50 100  默认0关闭
 CASH  👉  XP_CASH
+
 设置手机号 
  phone  👉  XP_phone
+
 设置验证码   默认0关闭获取token功能
 sms  👉  XP_sms
+
 ⚠️主机名以及重写👇
+
 （手机可以获取refreshTOKEN     其他开启抓包，然后登录笑谱，找到 https://veishop.iboxpay.com/nf_gateway/nf-user-auth-web/ignore_tk/veishop/v1/ 里的响应体 refreshTOKEN）
+
 hostname=veishop.iboxpay.com
+
 ############## 圈x
+
 #笑谱获取更新TOKEN
 https:\/\/veishop\.iboxpay\.com\/nf_gateway\/nf-user-auth-web\/ignore_tk\/veishop\/v1\/* url script-response-body https://raw.githubusercontent.com/ziye12/JavaScript/main/Task/iboxpay.js
+
 ############## loon
 http-response https:\/\/veishop\.iboxpay\.com\/nf_gateway\/nf-user-auth-web\/ignore_tk\/veishop\/v1\/* script-path=https://raw.githubusercontent.com/ziye12/JavaScript/main/Task/iboxpay.js, requires-body=1,max-size=0, tag=笑普token
+
 ############## surge
+
 #笑谱获取更新TOKEN
 笑谱获取更新TOKEN = type=http-response,pattern=https:\/\/veishop\.iboxpay\.com\/nf_gateway\/nf-user-auth-web\/ignore_tk\/veishop\/v1\/*,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/ziye12/JavaScript/main/Task/iboxpay.js
+
+
+
 */
 const $ = Env("笑谱");
 $.idx = ($.idx = ($.getval('iboxpaySuffix') || '1') - 1) > 0 ? ($.idx + 1 + '') : ''; // 账号扩展字符
@@ -229,7 +263,9 @@ function daytime(inputTime) {
 };
 //时间戳格式化日期
 function time(inputTime) {
-    var date = new Date(inputTime);
+    if ($.isNode()) {
+        var date = new Date(inputTime + 8 * 60 * 60 * 1000);
+    } else var date = new Date(inputTime);
     Y = date.getFullYear() + '-';
     M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
     D = date.getDate() + ' ';
@@ -315,7 +351,7 @@ async function all() {
             }
         }
 
-        if (nowTimes.getHours() <= 18 && (LIVE != 2 && $.splimit.data.isUperLimit == false || LIVE == 888)) {
+        if ( LIVE != 2 && $.splimit.data.isUperLimit == false || LIVE == 888) {
 
             await playo(); //播放o       
             await videoo(); //视频o
@@ -327,7 +363,7 @@ async function all() {
                 await play(); //播放       
                 await video(); //视频
                 await $.wait(tt * 1000)
-                if (!newcashcs.amount) {
+                if (LIVE == 666) {
                     await newvideo(); //新人福利
                 }
                 if ($.video.data && $.video.data.goldCoinNumber != 0 && videoPublishId6) {
@@ -381,7 +417,7 @@ function getTOKEN(timeout = 0) {
                     "source": "VEISHOP_APP_IOS",
                     "User-Agent": "VeiShop, 1.4.8 (iOS, 14.2, zh_CN, Apple, iPhone, )",
                     "X-User-Agent": "VeiShop, 1.4.8 (iOS, 14.2, zh_CN, Apple, iPhone, )",
-                    "traceid": "300000000000000000000000000000161000000000000",
+                    "traceid": "30000000000000000000" + tts() + "000000000000",
                     "Host": "veishop.iboxpay.com",
                     "Accept-Language": "zh-Hans-CN;q=1",
                     "Accept": "*/*"
