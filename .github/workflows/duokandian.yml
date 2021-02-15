@@ -26,7 +26,6 @@ jobs:
         run: |
           npm install
       - name: '运行 【duokandian】'
-        if: env.DKD_duokandianBODY
         run: |
           node Scripts/duokandian.js
         env:
