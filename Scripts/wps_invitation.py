@@ -3,8 +3,6 @@
 import requests
 import time
 import json
-import sys
-sys.path.append("My-Actions/function/")
 import pytz
 import datetime
 import re
