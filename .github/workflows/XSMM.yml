@@ -1,4 +1,4 @@
-name: 步步宝
+name: 🐱
 
 on:
   workflow_dispatch:
